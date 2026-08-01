@@ -136,7 +136,8 @@ object CatalogSyncManager {
                     priceRange = priceFormatted,
                     minPrice = priceValue,
                     maxPrice = priceValue,
-                    invoicesCount = 1
+                    invoicesCount = 1,
+                    category = category
                 )
             } else if (tokens.size >= 3) {
                 // Simple format: code;company;description;price

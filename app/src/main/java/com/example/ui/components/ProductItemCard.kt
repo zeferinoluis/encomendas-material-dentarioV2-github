@@ -38,6 +38,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.data.CategoryUtils
 import com.example.data.Product
 import com.example.ui.theme.AssisdentBg
 import com.example.ui.theme.AssisdentEmerald
@@ -191,7 +192,27 @@ fun ProductItemCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // Category badge
+            val categoryName = CategoryUtils.getNormalizedCategory(product)
+            val categoryInfo = CategoryUtils.getCategoryInfo(categoryName)
+            val catColor = Color(categoryInfo.colorHex)
+
+            Box(
+                modifier = Modifier
+                    .padding(start = 4.dp, bottom = 2.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(catColor.copy(alpha = 0.1f))
+                    .padding(horizontal = 6.dp, vertical = 2.dp)
+            ) {
+                Text(
+                    text = "${categoryInfo.emoji} $categoryName",
+                    color = catColor,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
             // Description
             Text(

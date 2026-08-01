@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.AppDatabase
+import com.example.data.CategoryStats
+import com.example.data.CategoryUtils
 import com.example.data.DentalRepository
 import com.example.data.Product
 import com.example.data.SavedOrder
@@ -11,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -49,12 +52,14 @@ class DentalViewModel(application: Application) : AndroidViewModel(application) 
     val searchQuery = MutableStateFlow("")
     val selectedFilter = MutableStateFlow(CompanyFilter.ALL)
     val selectedSortOption = MutableStateFlow(SortOption.DEFAULT)
+    val selectedCategory = MutableStateFlow<String?>(null)
 
     val syncStatus = MutableStateFlow<SyncState>(SyncState.Idle)
     val syncUrl = MutableStateFlow("")
 
     val products: StateFlow<List<Product>>
     val filteredProducts: StateFlow<List<Product>>
+    val categoryStats: StateFlow<List<CategoryStats>>
     val cartSummary: StateFlow<CartSummary>
     val savedOrders: StateFlow<List<SavedOrder>>
 
@@ -85,9 +90,32 @@ class DentalViewModel(application: Application) : AndroidViewModel(application) 
             initialValue = emptyList()
         )
 
-        filteredProducts = combine(products, searchQuery, selectedFilter, selectedSortOption) { list, query, filter, sort ->
+        categoryStats = products.map { list ->
+            val grouped = list.groupBy { CategoryUtils.getNormalizedCategory(it) }
+            CategoryUtils.CATEGORIES.map { catInfo ->
+                val catProducts = grouped[catInfo.name].orEmpty()
+                val selectedCount = catProducts.count { it.qty > 0 || it.isSelected }
+                val totalQty = catProducts.sumOf { it.qty }
+                CategoryStats(
+                    categoryName = catInfo.name,
+                    categoryInfo = catInfo,
+                    totalProducts = catProducts.size,
+                    selectedProductsCount = selectedCount,
+                    totalQuantity = totalQty
+                )
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
+        filteredProducts = combine(products, searchQuery, selectedFilter, selectedSortOption, selectedCategory) { list, query, filter, sort, category ->
             val queryClean = query.trim().lowercase()
             val filtered = list.filter { product ->
+                val prodCategory = CategoryUtils.getNormalizedCategory(product)
+                val matchesCategory = if (category == null) true else prodCategory.equals(category, ignoreCase = true)
+
                 val matchesFilter = when (filter) {
                     CompanyFilter.ALL -> true
                     CompanyFilter.MONTELLANO -> product.company.equals("Montellano", ignoreCase = true)
@@ -106,6 +134,7 @@ class DentalViewModel(application: Application) : AndroidViewModel(application) 
                     pCode.contains(queryClean) ||
                     pDesc.contains(queryClean) ||
                     pComp.contains(queryClean) ||
+                    prodCategory.lowercase().contains(queryClean) ||
                     queryClean.contains(pCode) ||
                     // Match parenthesized REF in description e.g. "(25950)"
                     Regex("""\(([a-zA-Z0-9\-\.\/]+)\)""")
@@ -123,7 +152,7 @@ class DentalViewModel(application: Application) : AndroidViewModel(application) 
                     } else false
                 }
 
-                matchesFilter && matchesSearch
+                matchesCategory && matchesFilter && matchesSearch
             }
 
             when (sort) {
@@ -279,6 +308,10 @@ class DentalViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             repository.deleteSavedOrder(id)
         }
+    }
+
+    fun selectCategory(categoryName: String?) {
+        selectedCategory.value = categoryName
     }
 
     fun saveSyncUrl(url: String) {

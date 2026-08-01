@@ -43,16 +43,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.data.Product
+import com.example.ui.CompanyFilter
 import com.example.ui.DentalViewModel
-import com.example.ui.components.CatalogSyncDialog
 import com.example.ui.components.AddProductDialog
 import com.example.ui.components.BarcodeScannerDialog
+import com.example.ui.components.CatalogSyncDialog
+import com.example.ui.components.CategoryFilterPillsRow
+import com.example.ui.components.CategoryGridOverview
 import com.example.ui.components.EditPriceDialog
 import com.example.ui.components.HeaderBanner
 import com.example.ui.components.OrderFooterBar
 import com.example.ui.components.OrderSummarySheet
 import com.example.ui.components.ProductItemCard
 import com.example.ui.components.SavedOrdersSheet
+import com.example.ui.components.SelectedCategoryHeaderBar
 import com.example.ui.components.SetQuantityDialog
 import com.example.ui.components.ToolbarSection
 import com.example.ui.theme.EncomendasTheme
@@ -87,6 +91,8 @@ fun MainScreen(viewModel: DentalViewModel) {
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val selectedFilter by viewModel.selectedFilter.collectAsStateWithLifecycle()
     val selectedSortOption by viewModel.selectedSortOption.collectAsStateWithLifecycle()
+    val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
+    val categoryStats by viewModel.categoryStats.collectAsStateWithLifecycle()
     val syncStatus by viewModel.syncStatus.collectAsStateWithLifecycle()
     val syncUrl by viewModel.syncUrl.collectAsStateWithLifecycle()
 
@@ -149,19 +155,46 @@ fun MainScreen(viewModel: DentalViewModel) {
                     color = MaterialTheme.colorScheme.background,
                     shadowElevation = 2.dp
                 ) {
-                    ToolbarSection(
-                        searchQuery = searchQuery,
-                        onSearchQueryChange = { viewModel.searchQuery.value = it },
-                        selectedFilter = selectedFilter,
-                        onFilterSelect = { viewModel.selectedFilter.value = it },
-                        selectedSortOption = selectedSortOption,
-                        onSortSelect = { viewModel.selectedSortOption.value = it },
-                        onOpenBarcodeScanner = { showBarcodeScannerDialog = true },
-                        onClearOrder = { viewModel.clearOrder() },
-                        onOpenHistory = { showSavedOrdersSheet = true },
-                        onAddProductClick = {
-                            initialCodeForNewProduct = ""
-                            showAddProductDialog = true
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        ToolbarSection(
+                            searchQuery = searchQuery,
+                            onSearchQueryChange = { viewModel.searchQuery.value = it },
+                            selectedFilter = selectedFilter,
+                            onFilterSelect = { viewModel.selectedFilter.value = it },
+                            selectedSortOption = selectedSortOption,
+                            onSortSelect = { viewModel.selectedSortOption.value = it },
+                            onOpenBarcodeScanner = { showBarcodeScannerDialog = true },
+                            onClearOrder = { viewModel.clearOrder() },
+                            onOpenHistory = { showSavedOrdersSheet = true },
+                            onAddProductClick = {
+                                initialCodeForNewProduct = ""
+                                showAddProductDialog = true
+                            }
+                        )
+                        CategoryFilterPillsRow(
+                            selectedCategory = selectedCategory,
+                            categoriesStats = categoryStats,
+                            onCategorySelect = { viewModel.selectCategory(it) }
+                        )
+                    }
+                }
+            }
+
+            // Category Overview Grid or Selected Category Header
+            if (selectedCategory != null) {
+                item(key = "selected_category_header") {
+                    SelectedCategoryHeaderBar(
+                        selectedCategoryName = selectedCategory!!,
+                        totalCountInCategory = filteredProducts.size,
+                        onBackToAllCategories = { viewModel.selectCategory(null) }
+                    )
+                }
+            } else if (searchQuery.isBlank() && selectedFilter == CompanyFilter.ALL) {
+                item(key = "category_grid_overview") {
+                    CategoryGridOverview(
+                        categoriesStats = categoryStats,
+                        onCategoryClick = { categoryName ->
+                            viewModel.selectCategory(categoryName)
                         }
                     )
                 }
@@ -196,7 +229,8 @@ fun MainScreen(viewModel: DentalViewModel) {
                         )
 
                         Text(
-                            text = "Selecionar Tudo (Visíveis: ${filteredProducts.size})",
+                            text = if (selectedCategory != null) "Selecionar Tudo em $selectedCategory (${filteredProducts.size})"
+                                   else "Selecionar Tudo (${filteredProducts.size} visíveis)",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Slate900

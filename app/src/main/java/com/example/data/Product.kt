@@ -14,6 +14,7 @@ data class Product(
     val invoicesCount: Int,
     val qty: Int = 0,
     val isSelected: Boolean = false,
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+    val category: String = ""
 )
 
