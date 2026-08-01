@@ -1,0 +1,8 @@
+{
+  "name": "Encomendas Dentário",
+  "description": "Catálogo e formulário de encomenda de material médico-dentário (Montellano & Assisdent)",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
