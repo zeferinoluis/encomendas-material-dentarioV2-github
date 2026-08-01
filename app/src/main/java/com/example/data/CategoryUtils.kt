@@ -39,10 +39,22 @@ object CategoryUtils {
             colorHex = 0xFF2563EB // Royal Blue
         ),
         CategoryInfo(
+            name = "Cimentos & Adesivos",
+            emoji = "🧴",
+            description = "Cimentos de fixação, adesivos de garrafa e sistemas de cimentação",
+            colorHex = 0xFFB45309 // Amber/Brown
+        ),
+        CategoryInfo(
             name = "Impressão & Prótese",
             emoji = "🧪",
-            description = "Silicones, alginatos, gessos, ceras e moldeiras",
+            description = "Silicones, alginatos, gessos, ceras, moldeiras e material protético",
             colorHex = 0xFF7C3AED // Purple
+        ),
+        CategoryInfo(
+            name = "Cunhas & Matrizes",
+            emoji = "🔩",
+            description = "Cunhas interdentárias, matrizes metálicas e sistemas de matriz seccional",
+            colorHex = 0xFF6366F1 // Indigo
         ),
         CategoryInfo(
             name = "Rotativos & Brocas",
@@ -51,10 +63,28 @@ object CategoryUtils {
             colorHex = 0xFFD97706 // Amber/Orange
         ),
         CategoryInfo(
+            name = "Polimento & Acabamento",
+            emoji = "💎",
+            description = "Discos, escovas, pastas e sistemas de polimento e acabamento",
+            colorHex = 0xFFCA8A04 // Gold
+        ),
+        CategoryInfo(
             name = "Endodontia & Cirurgia",
             emoji = "🩸",
             description = "Limas ProTaper, suturas de seda/silkam, alavancas e bisturis",
             colorHex = 0xFFDC2626 // Red
+        ),
+        CategoryInfo(
+            name = "Implantologia",
+            emoji = "🦴",
+            description = "Implantes, pilares e material cirúrgico de implantologia",
+            colorHex = 0xFF78716C // Stone
+        ),
+        CategoryInfo(
+            name = "Postes & Espigões",
+            emoji = "📌",
+            description = "Postes de fibra, espigões e sistemas de reconstrução radicular",
+            colorHex = 0xFFA21CAF // Fuchsia
         ),
         CategoryInfo(
             name = "Descartáveis & Proteção",
@@ -65,8 +95,32 @@ object CategoryUtils {
         CategoryInfo(
             name = "Higiene & Branqueamento",
             emoji = "✨",
-            description = "Pasta profilaxia, escovas nylon, Pola Night e kits",
+            description = "Pasta profilaxia, escovas nylon, branqueamento e kits de prevenção",
             colorHex = 0xFFDB2777 // Pink
+        ),
+        CategoryInfo(
+            name = "Instrumental Clínico",
+            emoji = "🛠️",
+            description = "Instrumental de consulta, cirurgia e manutenção de equipamento",
+            colorHex = 0xFF334155 // Dark Slate
+        ),
+        CategoryInfo(
+            name = "Radiologia",
+            emoji = "🩻",
+            description = "Protetores, sensores e material de radiografia",
+            colorHex = 0xFF0891B2 // Cyan
+        ),
+        CategoryInfo(
+            name = "Ortodontia",
+            emoji = "😬",
+            description = "Placas, ligaduras, arcos e material ortodôntico",
+            colorHex = 0xFFF97316 // Orange
+        ),
+        CategoryInfo(
+            name = "Equipamento Clínico",
+            emoji = "🔌",
+            description = "Turbinas, contra-ângulos e outros equipamentos de maior valor",
+            colorHex = 0xFF1E293B // Slate 800
         ),
         CategoryInfo(
             name = "Outros Artigos",
@@ -101,29 +155,87 @@ object CategoryUtils {
         return when {
             text.containsAny("agulha", "anestes", "articaina", "lidocaina", "xilonibsa", "topigel", "normonjet", "seringa", "infiltra", "troncular") -> "Agulhas & Anestesia"
             text.containsAny("desinf", "esterili", "cavicide", "puli-jet", "helix", "sterigut", "toalhete", "autoclave", "detergente", "limpeza") -> "Desinfecção & Esterilização"
-            text.containsAny("composito", "adesivo", "etch", "bulk fill", "matriz", "lixa", "polim", "maxcem", "restaur", "resina", "cera modelar", "match shade") -> "Dentística & Restauração"
-            text.containsAny("silicone", "alginato", "hydrogum", "occlufast", "putty", "impress", "molde", "gesso", "caixa aparelho") -> "Impressão & Prótese"
+            text.containsAny("cimento", "cimentaç", "cement") -> "Cimentos & Adesivos"
+            text.containsAny("composito", "adesivo", "etch", "bulk fill", "lixa", "polim", "maxcem", "restaur", "resina", "cera modelar", "match shade") -> "Dentística & Restauração"
+            text.containsAny("cunha", "matriz") -> "Cunhas & Matrizes"
+            text.containsAny("silicone", "alginato", "hydrogum", "occlufast", "putty", "impress", "molde", "gesso", "caixa aparelho", "protese", "prótese") -> "Impressão & Prótese"
             text.containsAny("broca", "diamante", "diam komet", "turbina", "nsk", "pana plus", "rotativo", "contra-angulo", "peca de mao", "spray lubrif") -> "Rotativos & Brocas"
+            text.containsAny("polidor", "polimento", "acabamento", "escova polim") -> "Polimento & Acabamento"
             text.containsAny("protaper", "lima", "sutura", "silkam", "seda", "alavanca", "bisturi", "cirurg", "endodon", "gutapercha", "gelo") -> "Endodontia & Cirurgia"
+            text.containsAny("implante", "pilar cirurgico", "implantologia") -> "Implantologia"
+            text.containsAny("poste de fibra", "espigao", "espigão", "poste dentin") -> "Postes & Espigões"
             text.containsAny("babete", "copo", "luva", "aspirador", "algodao", "protector rvg", "mascara", "campo", "dodeira", "dedeira", "descart") -> "Descartáveis & Proteção"
             text.containsAny("pola night", "bleaching", "profilax", "escova nylon", "whitesmile", "branquea", "higiene") -> "Higiene & Branqueamento"
+            text.containsAny("instrumental", "pinca", "espatula", "porta") -> "Instrumental Clínico"
+            text.containsAny("radiograf", "rvg", "sensor rx", "colimador") -> "Radiologia"
+            text.containsAny("ortodont", "bracket", "arco ortho", "ligadura", "placa clear") -> "Ortodontia"
+            text.containsAny("equipamento", "compressor", "autoclave classe") -> "Equipamento Clínico"
             else -> "Outros Artigos"
         }
     }
 
+    /**
+     * Maps a raw category coming either from the Montellano catalogue (Spanish, catalog.csv)
+     * or from the clinic's own purchase-history base (Portuguese, Base_Precos_Material_Dentario.xlsx)
+     * to one of the app's [CATEGORIES]. Covers all 18 raw Montellano categories and all 14 raw
+     * clinic categories 1:1, so only genuinely miscellaneous items ("VARIOS" / "Diversos") fall
+     * back to "Outros Artigos".
+     *
+     * Matching is done on an accent-stripped, lower-cased copy of the raw text so that Spanish
+     * ("RESTAURACIÓN") and Portuguese ("Restauração") spellings of the same word both match the
+     * same accent-free keyword ("restaura").
+     */
     private fun mapRawCategory(raw: String): String {
-        val lower = raw.trim().lowercase(Locale.ROOT)
+        val lower = stripDiacritics(raw.trim().lowercase(Locale.ROOT))
         return when {
-            lower.containsAny("agujas", "anestesia", "agulha") -> "Agulhas & Anestesia"
-            lower.containsAny("desinfe", "esterili") -> "Desinfecção & Esterilização"
-            lower.containsAny("compuesto", "adhesivo", "restaura", "composito") -> "Dentística & Restauração"
-            lower.containsAny("impresion", "silicon", "alginat", "protesis", "impressao") -> "Impressão & Prótese"
-            lower.containsAny("rotatorio", "fresa", "broca", "turbin") -> "Rotativos & Brocas"
-            lower.containsAny("endodon", "cirugia", "sutura", "lima") -> "Endodontia & Cirurgia"
-            lower.containsAny("desechable", "proteccion", "descart") -> "Descartáveis & Proteção"
-            lower.containsAny("blanqueamiento", "profilaxis", "higiene") -> "Higiene & Branqueamento"
+            // Agulhas & Anestesia
+            lower.containsAny("agujas y anestesias", "agujas", "anestes", "agulha") -> "Agulhas & Anestesia"
+            // Desinfecção & Esterilização
+            lower.containsAny("desinfec", "esterili") -> "Desinfecção & Esterilização"
+            // Cimentos & Adesivos
+            lower.containsAny("cementos", "cimento") -> "Cimentos & Adesivos"
+            // Instrumental Clínico (checked before "Endodontia & Cirurgia" — the clinic's own
+            // category "Instrumental Clínico e Cirurgia" contains the word "cirurgia" too)
+            lower.contains("instrumental") -> "Instrumental Clínico"
+            // Dentística & Restauração
+            lower.containsAny("restaura", "compuesto", "adhesivo", "composito", "dentisteria") -> "Dentística & Restauração"
+            // Cunhas & Matrizes
+            lower.containsAny("cunas y matrices", "cunhas e matrizes", "matrices", "matrizes") -> "Cunhas & Matrizes"
+            // Impressão & Prótese
+            lower.containsAny("impres", "silicon", "alginat", "protesis", "protese", "gesso", "laboratorio") -> "Impressão & Prótese"
+            // Rotativos & Brocas
+            lower.containsAny("fresas", "rotatorio", "broca", "turbin", "diamantadas") -> "Rotativos & Brocas"
+            // Polimento & Acabamento
+            lower.containsAny("pulidores", "polimento", "acabamento") -> "Polimento & Acabamento"
+            // Endodontia & Cirurgia
+            lower.containsAny("endodoncia", "endodontia", "biomateriales y suturas", "cirugia", "cirurgia", "sutura", "lima") -> "Endodontia & Cirurgia"
+            // Implantologia
+            lower.containsAny("implantes", "implantologia") -> "Implantologia"
+            // Postes & Espigões
+            lower.containsAny("postes", "espigoes") -> "Postes & Espigões"
+            // Descartáveis & Proteção
+            lower.containsAny("desechables", "descartaveis", "proteccion", "protecao individual", "descart") -> "Descartáveis & Proteção"
+            // Higiene & Branqueamento
+            lower.containsAny("prevencion y profilaxis", "prevencao e profilaxia", "profilaxia", "blanqueamiento", "estetica e branqueamento", "higiene") -> "Higiene & Branqueamento"
+            // Radiologia
+            lower.containsAny("radiografia", "radiologia") -> "Radiologia"
+            // Ortodontia
+            lower.containsAny("ortodoncia", "ortodontia") -> "Ortodontia"
+            // Equipamento Clínico
+            lower.containsAny("equipamento clinico", "equipo") -> "Equipamento Clínico"
+            // Explicit catch-alls
+            lower.containsAny("varios", "diversos") -> "Outros Artigos"
             else -> "Outros Artigos"
         }
+    }
+
+    /**
+     * Removes accents/diacritics (á, ã, ç, ñ, ó, …) so category text coming from Spanish or
+     * Portuguese sources can be matched with a single set of plain keywords.
+     */
+    private fun stripDiacritics(input: String): String {
+        val normalized = java.text.Normalizer.normalize(input, java.text.Normalizer.Form.NFD)
+        return normalized.replace(Regex("\\p{Mn}+"), "")
     }
 
     private fun String.containsAny(vararg keywords: String): Boolean {
